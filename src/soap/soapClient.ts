@@ -1,4 +1,13 @@
 import * as soap from "soap";
+import {
+  BadRequestError,
+  InvalidCredentialsError,
+  NotFoundError,
+  ValidationError,
+  UnauthorizedError,
+  ForbiddenError,
+  ConflictError,
+} from "../middlewares/errors";
 
 const SOAP_URL = "http://localhost:8001/soap?wsdl";
 
@@ -24,7 +33,34 @@ export const soapClient = {
 
         client.registerClient(data, (error: any, result: any) => {
           if (error) {
-            console.error("Error calling SOAP service:", error);
+            if (error.root && error.root.Envelope) {
+              const faultString = error.root.Envelope.Body.Fault.Reason.Text;
+              console.error("Error calling SOAP service:", faultString);
+
+              if (faultString.includes("BadRequestError"))
+                return reject(new BadRequestError(faultString));
+
+              if (faultString.includes("InvalidCredentialsError"))
+                return reject(new InvalidCredentialsError(faultString));
+
+              if (faultString.includes("NotFoundError"))
+                return reject(new NotFoundError(faultString));
+
+              if (faultString.includes("ValidationError"))
+                return reject(new ValidationError(faultString));
+
+              if (faultString.includes("UnauthorizedError"))
+                return reject(new UnauthorizedError(faultString));
+
+              if (faultString.includes("ConflictError"))
+                return reject(new ConflictError(faultString));
+
+              if (faultString.includes("ForbiddenError"))
+                return reject(new ForbiddenError(faultString));
+
+              return reject(new Error(faultString));
+            }
+
             return reject(new Error("Error calling SOAP service"));
           }
 

@@ -1,7 +1,7 @@
 import Wallet from "../models/Wallet";
 
 export default class WalletRepository {
-  public async findWalletByClientId(clientId: number): Promise<Wallet | null> {
+  public findWalletByClientId(clientId: number): Promise<Wallet | null> {
     return Wallet.findOne({ where: { clientId } });
   }
 

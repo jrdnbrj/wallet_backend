@@ -37,7 +37,7 @@ class SoapService {
     return {
       success: true,
       message: "Cliente registrado con éxito",
-      data: newClient,
+      data: newClient.dataValues,
     };
   }
 }

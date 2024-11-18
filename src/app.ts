@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cors from "cors";
+import errorMiddleware from "./middlewares/errors/errorHandler";
 import clientRoutes from "./routes/clientRoutes";
 
 dotenv.config();
@@ -17,5 +18,7 @@ app.get("/ping", (req, res) => {
 });
 
 app.use("/api/clients", clientRoutes);
+
+app.use(errorMiddleware);
 
 export default app;

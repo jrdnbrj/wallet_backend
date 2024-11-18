@@ -25,38 +25,38 @@ const wsdl = `
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
     <message name="registerClientRequest">
-        <part name="document" type="xsd:string"/>
-        <part name="name" type="xsd:string"/>
-        <part name="email" type="xsd:string"/>
-        <part name="phone" type="xsd:string"/>
+      <part name="document" type="xsd:string"/>
+      <part name="name" type="xsd:string"/>
+      <part name="email" type="xsd:string"/>
+      <part name="phone" type="xsd:string"/>
     </message>
     <message name="registerClientResponse">
-        <part name="message" type="xsd:string"/>
-        <part name="success" type="xsd:boolean"/>
-        <part name="data" type="xsd:anyType"/>
+      <part name="message" type="xsd:string"/>
+      <part name="success" type="xsd:boolean"/>
+      <part name="data" type="xsd:anyType"/>
     </message>
     <portType name="ClientPort">
-        <operation name="registerClient">
-            <input message="tns:registerClientRequest"/>
-            <output message="tns:registerClientResponse"/>
-        </operation>
+      <operation name="registerClient">
+        <input message="tns:registerClientRequest"/>
+        <output message="tns:registerClientResponse"/>
+      </operation>
     </portType>
     <binding name="ClientBinding" type="tns:ClientPort">
-        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-        <operation name="registerClient">
-            <soap:operation soapAction="http://www.example.org/ClientService/registerClient"/>
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-        </operation>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="registerClient">
+        <soap:operation soapAction="http://www.example.org/ClientService/registerClient"/>
+        <input>
+          <soap:body use="literal"/>
+        </input>
+        <output>
+          <soap:body use="literal"/>
+        </output>
+      </operation>
     </binding>
     <service name="ClientService">
-        <port name="ClientPort" binding="tns:ClientBinding">
-            <soap:address location="http://localhost:8001/soap"/>
-        </port>
+      <port name="ClientPort" binding="tns:ClientBinding">
+        <soap:address location="http://localhost:8001/soap"/>
+      </port>
     </service>
   </definitions>
 `;
