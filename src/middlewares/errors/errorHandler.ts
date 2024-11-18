@@ -21,7 +21,7 @@ export default function errorHandler(
   if (err instanceof ValidationError || err instanceof BadRequestError) {
     res.status(400).json({
       success: false,
-      cod_error: "400",
+      cod_error: 400,
       message_error: err.message,
     });
     return;
@@ -33,7 +33,7 @@ export default function errorHandler(
   ) {
     res.status(401).json({
       success: false,
-      cod_error: "401",
+      cod_error: 401,
       message_error: err.message,
     });
     return;
@@ -42,7 +42,7 @@ export default function errorHandler(
   if (err instanceof ForbiddenError) {
     res.status(403).json({
       success: false,
-      cod_error: "403",
+      cod_error: 403,
       message_error: err.message,
     });
     return;
@@ -51,7 +51,7 @@ export default function errorHandler(
   if (err instanceof NotFoundError) {
     res.status(404).json({
       success: false,
-      cod_error: "404",
+      cod_error: 404,
       message_error: err.message,
     });
     return;
@@ -60,7 +60,7 @@ export default function errorHandler(
   if (err instanceof ConflictError) {
     res.status(409).json({
       success: false,
-      cod_error: "409",
+      cod_error: 409,
       message_error: err.message,
     });
     return;
@@ -73,7 +73,7 @@ export default function errorHandler(
     }));
     res.status(400).json({
       success: false,
-      cod_error: "400",
+      cod_error: 400,
       message_error: "Validation error",
       data: errors,
     });
@@ -83,7 +83,7 @@ export default function errorHandler(
   console.error("Unhandled error:", err);
   res.status(500).json({
     success: false,
-    cod_error: "500",
+    cod_error: 500,
     message_error: `Error interno del servidor. ${err.message}`,
   });
 }

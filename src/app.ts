@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import errorMiddleware from "./middlewares/errors/errorHandler";
 import clientRoutes from "./routes/clientRoutes";
+import walletRoutes from "./routes/walletRoutes";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.get("/ping", (req, res) => {
 });
 
 app.use("/api/clients", clientRoutes);
+app.use("/api/wallet", walletRoutes);
 
 app.use(errorMiddleware);
 

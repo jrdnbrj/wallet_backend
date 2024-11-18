@@ -1,8 +1,11 @@
 import Client from "../models/Client";
 
 export default class ClientRepository {
-  public findClientByDocument(document: string): Promise<Client | null> {
-    return Client.findOne({ where: { document } });
+  public findClientByDocumentAndPhone(
+    document: string,
+    phone: string
+  ): Promise<Client | null> {
+    return Client.findOne({ where: { document, phone } });
   }
 
   public createClient(data: {

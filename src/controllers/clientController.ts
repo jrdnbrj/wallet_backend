@@ -1,23 +1,19 @@
 import { Request, Response } from "express";
 import { soapClient } from "../soap/soapClient";
 import { asyncHandler } from "../middlewares/asyncHandler";
+import { ValidationError } from "../middlewares/errors";
 
 export const registerClient = asyncHandler(
   async (req: Request, res: Response) => {
     const { document, name, email, phone } = req.body;
 
-    const client = await soapClient.registerClient({
-      document,
-      name,
-      email,
-      phone,
-    });
+    if (!document || !name || !email || !phone)
+      throw new ValidationError(
+        "document, name, email and phone are required."
+      );
 
-    res.status(201).json({
-      success: true,
-      cod_error: "00",
-      message_error: client.message,
-      data: client.data,
-    });
+    const data = await soapClient.registerClient(req.body);
+
+    res.status(201).json({ success: true, cod_error: "00", data });
   }
 );

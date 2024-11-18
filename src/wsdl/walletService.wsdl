@@ -1,0 +1,107 @@
+<definitions name="WalletService"
+  targetNamespace="http://www.example.org/WalletService/"
+  xmlns:tns="http://www.example.org/WalletService/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <message name="rechargeWalletRequest">
+    <part name="clientId" type="xsd:int"/>
+    <part name="amount" type="xsd:float"/>
+  </message>
+  <message name="rechargeWalletResponse">
+    <part name="success" type="xsd:boolean"/>
+    <part name="cod_error" type="xsd:string"/>
+    <part name="message_error" type="xsd:string"/>
+    <part name="data" type="xsd:anyType"/>
+  </message>
+  <message name="makePaymentRequest">
+    <part name="clientId" type="xsd:int"/>
+    <part name="amount" type="xsd:float"/>
+  </message>
+  <message name="makePaymentResponse">
+    <part name="success" type="xsd:boolean"/>
+    <part name="cod_error" type="xsd:string"/>
+    <part name="message_error" type="xsd:string"/>
+    <part name="data" type="xsd:anyType"/>
+  </message>
+  <message name="confirmPaymentRequest">
+    <part name="paymentId" type="xsd:int"/>
+  </message>
+  <message name="confirmPaymentResponse">
+    <part name="success" type="xsd:boolean"/>
+    <part name="cod_error" type="xsd:string"/>
+    <part name="message_error" type="xsd:string"/>
+    <part name="data" type="xsd:anyType"/>
+  </message>
+  <message name="getWalletBalanceRequest">
+    <part name="clientId" type="xsd:int"/>
+  </message>
+  <message name="getWalletBalanceResponse">
+    <part name="success" type="xsd:boolean"/>
+    <part name="cod_error" type="xsd:string"/>
+    <part name="message_error" type="xsd:string"/>
+    <part name="data" type="xsd:anyType"/>
+  </message>
+  <portType name="WalletPort">
+    <operation name="rechargeWallet">
+      <input message="tns:rechargeWalletRequest"/>
+      <output message="tns:rechargeWalletResponse"/>
+    </operation>
+    <operation name="makePayment">
+      <input message="tns:makePaymentRequest"/>
+      <output message="tns:makePaymentResponse"/>
+    </operation>
+    <operation name="confirmPayment">
+      <input message="tns:confirmPaymentRequest"/>
+      <output message="tns:confirmPaymentResponse"/>
+    </operation>
+    <operation name="getWalletBalance">
+      <input message="tns:getWalletBalanceRequest"/>
+      <output message="tns:getWalletBalanceResponse"/>
+    </operation>
+  </portType>
+  <binding name="WalletBinding" type="tns:WalletPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="rechargeWallet">
+      <soap:operation soapAction="http://www.example.org/WalletService/rechargeWallet"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="makePayment">
+      <soap:operation soapAction="http://www.example.org/WalletService/makePayment"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="confirmPayment">
+      <soap:operation soapAction="http://www.example.org/WalletService/confirmPayment"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getWalletBalance">
+      <soap:operation soapAction="http://www.example.org/WalletService/getWalletBalance"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="WalletService">
+    <port name="WalletPort" binding="tns:WalletBinding">
+      <soap:address location="http://localhost:8001/soap/wallet"/>
+    </port>
+  </service>
+</definitions>
