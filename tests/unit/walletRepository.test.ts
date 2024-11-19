@@ -1,5 +1,5 @@
-import WalletRepository from "../../src/repositories/walletRepository";
 const SequelizeMock = require("sequelize-mock");
+import WalletRepository from "../../src/repositories/walletRepository";
 import Wallet from "../../src/models/Wallet";
 import Payment from "../../src/models/Payment";
 

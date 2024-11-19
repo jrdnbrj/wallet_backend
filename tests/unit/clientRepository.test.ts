@@ -1,5 +1,5 @@
-import ClientRepository from "../../src/repositories/clientRepository";
 const SequelizeMock = require("sequelize-mock");
+import ClientRepository from "../../src/repositories/clientRepository";
 import Client from "../../src/models/Client";
 
 describe("ClientRepository", () => {
