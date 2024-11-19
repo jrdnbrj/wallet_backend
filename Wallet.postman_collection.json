@@ -1,0 +1,152 @@
+{
+  "info": {
+    "_postman_id": "3d5e5e44-f815-4001-b5e6-8eae9f18f46c",
+    "name": "Wallet",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "11201353"
+  },
+  "item": [
+    {
+      "name": "Ping",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Register Client",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"document\": \"1234567890\",\n    \"name\": \"John Doe\",\n    \"email\": \"john.does@example.com\",\n    \"phone\": \"+1234567890\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/clients/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "clients", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Recharge Wallet",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"document\": \"1234567890\",\n    \"phone\": \"+1234567890\",\n    \"amount\": 1000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/wallet/recharge",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "wallet", "recharge"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Make Payment",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"document\": \"1234567890\",\n    \"phone\": \"+1234567890\",\n    \"amount\": 120\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/wallet/pay",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "wallet", "pay"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Confirm Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-session-id",
+            "value": "f7067cb1-438c-4105-83e3-2313172cb5cf",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer 199843",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/wallet/29/confirm",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "wallet", "29", "confirm"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Wallet Balance",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"document\": \"1234567890\",\n    \"phone\": \"+1234567890\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/wallet/balance",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "wallet", "balance"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
