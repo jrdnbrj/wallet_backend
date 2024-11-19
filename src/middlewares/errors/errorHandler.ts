@@ -3,12 +3,15 @@ import {
   BadRequestError,
   InvalidCredentialsError,
   NotFoundError,
-  ValidationError,
   UnauthorizedError,
-  ForbiddenError,
   ConflictError,
 } from ".";
-import { ValidationError as SequelizeValidationError } from "sequelize";
+import {
+  ValidationError,
+  UniqueConstraintError,
+  ForeignKeyConstraintError,
+  DatabaseError,
+} from "sequelize";
 
 export default function errorHandler(
   err: Error,
@@ -18,10 +21,10 @@ export default function errorHandler(
 ): void {
   if (res.headersSent) return next(err);
 
-  if (err instanceof ValidationError || err instanceof BadRequestError) {
+  if (err instanceof BadRequestError) {
     res.status(400).json({
       success: false,
-      cod_error: 400,
+      cod_error: "20",
       message_error: err.message,
     });
     return;
@@ -33,16 +36,7 @@ export default function errorHandler(
   ) {
     res.status(401).json({
       success: false,
-      cod_error: 401,
-      message_error: err.message,
-    });
-    return;
-  }
-
-  if (err instanceof ForbiddenError) {
-    res.status(403).json({
-      success: false,
-      cod_error: 403,
+      cod_error: "01",
       message_error: err.message,
     });
     return;
@@ -51,7 +45,7 @@ export default function errorHandler(
   if (err instanceof NotFoundError) {
     res.status(404).json({
       success: false,
-      cod_error: 404,
+      cod_error: "04",
       message_error: err.message,
     });
     return;
@@ -60,22 +54,52 @@ export default function errorHandler(
   if (err instanceof ConflictError) {
     res.status(409).json({
       success: false,
-      cod_error: 409,
+      cod_error: "09",
       message_error: err.message,
     });
     return;
   }
 
-  if (err instanceof SequelizeValidationError) {
-    const errors = err.errors.map((errorItem) => ({
-      field: errorItem.path,
-      message: errorItem.message,
-    }));
+  if (err instanceof ValidationError) {
     res.status(400).json({
       success: false,
-      cod_error: 400,
-      message_error: "Validation error",
-      data: errors,
+      cod_error: "61",
+      message_error: "Sequelize Validation error",
+      data: err.errors.map((e) => ({
+        field: e.path,
+        message: e.message,
+      })),
+    });
+    return;
+  }
+
+  if (err instanceof UniqueConstraintError) {
+    res.status(409).json({
+      success: false,
+      cod_error: "62",
+      message_error: "Sequelize Unique constraint violation",
+      data: err.errors.map((e) => ({
+        field: e.path,
+        message: e.message,
+      })),
+    });
+    return;
+  }
+
+  if (err instanceof ForeignKeyConstraintError) {
+    res.status(400).json({
+      success: false,
+      cod_error: "63",
+      message_error: "Sequelize Foreign key constraint error",
+    });
+    return;
+  }
+
+  if (err instanceof DatabaseError) {
+    res.status(500).json({
+      success: false,
+      cod_error: "64",
+      message_error: "Sequelize Database error",
     });
     return;
   }
@@ -83,7 +107,7 @@ export default function errorHandler(
   console.error("Unhandled error:", err);
   res.status(500).json({
     success: false,
-    cod_error: 500,
+    cod_error: "50",
     message_error: `Error interno del servidor. ${err.message}`,
   });
 }

@@ -8,7 +8,15 @@ export const clientSoapDefinition = {
         name: string;
         email: string;
         phone: string;
-      }) => clientSoapService.registerClient(args),
+      }) => {
+        const client = await clientSoapService.registerClient(args);
+
+        return {
+          ...client,
+          createdAt: client.createdAt.toISOString(),
+          updatedAt: client.updatedAt.toISOString(),
+        };
+      },
     },
   },
 };

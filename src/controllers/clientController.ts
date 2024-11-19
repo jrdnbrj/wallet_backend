@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { soapClient } from "../soap/soapClient";
 import { asyncHandler } from "../middlewares/asyncHandler";
-import { ValidationError } from "../middlewares/errors";
+import { BadRequestError } from "../middlewares/errors";
 
 export const registerClient = asyncHandler(
   async (req: Request, res: Response) => {
     const { document, name, email, phone } = req.body;
 
     if (!document || !name || !email || !phone)
-      throw new ValidationError(
+      throw new BadRequestError(
         "document, name, email and phone are required."
       );
 

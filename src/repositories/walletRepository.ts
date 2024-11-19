@@ -6,11 +6,11 @@ export default class WalletRepository {
     return Wallet.findOne({ where: { clientId } });
   }
 
-  public async createWallet(data: {
+  public createWallet(data: {
     clientId: number;
     balance: number;
   }): Promise<Wallet> {
-    return await Wallet.create({
+    return Wallet.create({
       clientId: data.clientId,
       balance: data.balance,
     });
@@ -27,18 +27,13 @@ export default class WalletRepository {
     clientId: number;
     amount: number;
     status?: string;
+    sessionId: string;
+    token: string;
   }): Promise<Payment> {
     return Payment.create(data);
   }
 
   public findPaymentById(paymentId: number): Promise<Payment | null> {
     return Payment.findOne({ where: { id: paymentId } });
-  }
-
-  public async updatePaymentStatus(
-    paymentId: number,
-    status: string
-  ): Promise<void> {
-    await Payment.update({ status }, { where: { id: paymentId } });
   }
 }

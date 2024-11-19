@@ -7,6 +7,8 @@ class Payment extends Model {
   public clientId!: number;
   public amount!: number;
   public status!: string;
+  public sessionId!: string;
+  public token!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -36,6 +38,14 @@ Payment.init(
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "PENDING",
+    },
+    sessionId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    token: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

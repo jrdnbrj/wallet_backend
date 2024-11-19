@@ -29,7 +29,7 @@ export default class ClientSoapService {
     email: string;
     phone: string;
   }): Promise<Client> {
-    const { document, name, email, phone } = data;
+    const { document, phone } = data;
 
     const client = await this.clientRepository.findClientByDocumentAndPhone(
       document,
@@ -41,12 +41,7 @@ export default class ClientSoapService {
         "A client with that document and phone number already exists"
       );
 
-    const newClient = await this.clientRepository.createClient({
-      document,
-      name,
-      email,
-      phone,
-    });
+    const newClient = await this.clientRepository.createClient(data);
 
     return newClient.dataValues;
   }

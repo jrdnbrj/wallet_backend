@@ -3,11 +3,17 @@ import {
   BadRequestError,
   InvalidCredentialsError,
   NotFoundError,
-  ValidationError,
   UnauthorizedError,
-  ForbiddenError,
   ConflictError,
 } from "../middlewares/errors";
+import {
+  Model,
+  ValidationError,
+  ValidationErrorItem,
+  UniqueConstraintError,
+  ForeignKeyConstraintError,
+  DatabaseError,
+} from "sequelize";
 
 const CLIENT_SOAP_URL = "http://localhost:8001/soap/client?wsdl";
 const WALLET_SOAP_URL = "http://localhost:8001/soap/wallet?wsdl";
@@ -18,6 +24,8 @@ type SoapResponse = {
   message_error: string;
   data?: any;
 };
+
+const mockInstance = {} as Model<any, any>;
 
 export const soapClient = {
   async callSoapMethod(
@@ -41,7 +49,8 @@ export const soapClient = {
         client[methodName](data, (error: any, result: any) => {
           if (error) {
             if (error.root && error.root.Envelope) {
-              const faultString = error.root.Envelope.Body.Fault.Reason.Text;
+              const faultString =
+                error.root.Envelope.Body.Fault?.Reason?.Text || "";
               console.error(
                 `Error calling SOAP service (${methodName}):`,
                 faultString
@@ -56,17 +65,39 @@ export const soapClient = {
               if (faultString.includes("NotFoundError"))
                 return reject(new NotFoundError(faultString));
 
-              if (faultString.includes("ValidationError"))
-                return reject(new ValidationError(faultString));
-
               if (faultString.includes("UnauthorizedError"))
                 return reject(new UnauthorizedError(faultString));
 
               if (faultString.includes("ConflictError"))
                 return reject(new ConflictError(faultString));
 
-              if (faultString.includes("ForbiddenError"))
-                return reject(new ForbiddenError(faultString));
+              if (faultString.includes("ValidationError")) {
+                const errors: ValidationErrorItem[] = [
+                  new ValidationErrorItem(
+                    faultString,
+                    "validation error",
+                    "field",
+                    "value",
+                    mockInstance,
+                    "customValidator",
+                    "",
+                    []
+                  ),
+                ];
+                return reject(new ValidationError(faultString, errors));
+              }
+
+              if (
+                faultString.includes("Unique") &&
+                faultString.includes("constraint")
+              )
+                return reject(new UniqueConstraintError(faultString));
+
+              if (faultString.includes("ForeignKeyConstraintError"))
+                return reject(new ForeignKeyConstraintError(faultString));
+
+              if (faultString.includes("DatabaseError"))
+                return reject(new DatabaseError(faultString));
 
               return reject(new Error(faultString));
             }
@@ -105,8 +136,8 @@ export const soapClient = {
     return this.callSoapMethod("makePayment", WALLET_SOAP_URL, data);
   },
 
-  async confirmPayment(paymentId: number): Promise<SoapResponse> {
-    return this.callSoapMethod("confirmPayment", WALLET_SOAP_URL, paymentId);
+  async confirmPayment(data: { payment: any }): Promise<SoapResponse> {
+    return this.callSoapMethod("confirmPayment", WALLET_SOAP_URL, data);
   },
 
   async getWalletBalance(clientId: number): Promise<SoapResponse> {

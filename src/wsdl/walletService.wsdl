@@ -5,7 +5,8 @@
   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <message name="rechargeWalletRequest">
-    <part name="clientId" type="xsd:int"/>
+    <part name="document" type="xsd:string"/>
+    <part name="phone" type="xsd:string"/>
     <part name="amount" type="xsd:float"/>
   </message>
   <message name="rechargeWalletResponse">
@@ -15,17 +16,30 @@
     <part name="data" type="xsd:anyType"/>
   </message>
   <message name="makePaymentRequest">
-    <part name="clientId" type="xsd:int"/>
+    <part name="document" type="xsd:string"/>
+    <part name="phone" type="xsd:string"/>
     <part name="amount" type="xsd:float"/>
   </message>
   <message name="makePaymentResponse">
     <part name="success" type="xsd:boolean"/>
     <part name="cod_error" type="xsd:string"/>
     <part name="message_error" type="xsd:string"/>
-    <part name="data" type="xsd:anyType"/>
+    <part name="data" type="tns:PaymentData"/>
   </message>
+  <complexType name="PaymentData">
+    <sequence>
+      <element name="id" type="xsd:int"/>
+      <element name="clientId" type="xsd:int"/>
+      <element name="amount" type="xsd:float"/>
+      <element name="status" type="xsd:string"/>
+      <element name="sessionId" type="xsd:string"/>
+      <element name="token" type="xsd:string"/>
+      <element name="createdAt" type="xsd:dateTime"/>
+      <element name="updatedAt" type="xsd:dateTime"/>
+    </sequence>
+  </complexType>
   <message name="confirmPaymentRequest">
-    <part name="paymentId" type="xsd:int"/>
+    <part name="payment" type="xsd:anyType"/>
   </message>
   <message name="confirmPaymentResponse">
     <part name="success" type="xsd:boolean"/>

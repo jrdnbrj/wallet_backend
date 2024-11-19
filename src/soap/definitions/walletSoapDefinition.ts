@@ -12,8 +12,16 @@ export const walletSoapDefinition = {
         document: string;
         phone: string;
         amount: number;
-      }) => walletSoapService.makePayment(args),
-      confirmPayment: async (args: number) =>
+      }) => {
+        const payment = await walletSoapService.makePayment(args);
+
+        return {
+          ...payment,
+          createdAt: payment.createdAt.toISOString(),
+          updatedAt: payment.updatedAt.toISOString(),
+        };
+      },
+      confirmPayment: async (args: { payment: any }) =>
         walletSoapService.confirmPayment(args),
       getWalletBalance: async (args: number) =>
         walletSoapService.getWalletBalance(args),

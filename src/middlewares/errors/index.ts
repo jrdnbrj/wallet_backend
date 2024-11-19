@@ -19,24 +19,10 @@ export class NotFoundError extends Error {
   }
 }
 
-export class ValidationError extends Error {
-  constructor(message: string = "Error de validación.") {
-    super(message);
-    this.name = "ValidationError";
-  }
-}
-
 export class UnauthorizedError extends Error {
   constructor(message: string = "No autorizado.") {
     super(message);
     this.name = "UnauthorizedError";
-  }
-}
-
-export class ForbiddenError extends Error {
-  constructor(message: string = "Acceso prohibido.") {
-    super(message);
-    this.name = "ForbiddenError";
   }
 }
 

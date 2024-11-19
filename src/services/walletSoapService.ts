@@ -1,10 +1,8 @@
 import WalletRepository from "../repositories/walletRepository";
 import ClientSoapService from "../services/clientSoapService";
-import {
-  NotFoundError,
-  ConflictError,
-  ValidationError,
-} from "../middlewares/errors";
+import { NotFoundError, ConflictError } from "../middlewares/errors";
+import crypto from "crypto";
+import Payment from "../models/Payment";
 
 class WalletSoapService {
   private walletRepository: WalletRepository;
@@ -51,31 +49,41 @@ class WalletSoapService {
 
     const wallet = await this.walletRepository.findWalletByClientId(client.id);
 
-    if (!wallet) throw new NotFoundError("Wallet not found.");
+    if (!wallet)
+      throw new NotFoundError("Wallet not found. Do a recharge first.");
 
     if (wallet.balance < data.amount)
       throw new ConflictError("Insufficient balance.");
 
+    const sessionId = crypto.randomUUID();
+    const token = Math.floor(100000 + Math.random() * 900000).toString();
+
     const payment = await this.walletRepository.createPayment({
       clientId: client.id,
       amount: Number(data.amount.toFixed(2)),
+      sessionId,
+      token,
     });
+
+    console.log(`Email sent to client with token: ${token}`);
 
     return payment.dataValues;
   }
 
-  async confirmPayment(paymentId: number) {
-    const payment = await this.walletRepository.findPaymentById(paymentId);
+  async confirmPayment(data: { payment: any }) {
+    let payment = Payment.build(data.payment, { isNewRecord: false });
 
-    if (!payment) throw new NotFoundError("Payment not found.");
-
-    if (payment.status === "CONFIRMED")
-      throw new ValidationError("Payment has already been confirmed");
+    if (payment.status === "COMPLETED")
+      throw new ConflictError("Payment has already been completed.");
 
     const wallet = await this.walletRepository.findWalletByClientId(
       payment.clientId
     );
-    if (!wallet) throw new NotFoundError("Wallet not found.");
+
+    if (!wallet)
+      throw new NotFoundError(
+        "Wallet not found. Do a recharge and make a payment before confirm a payment."
+      );
 
     wallet.balance -= payment.amount;
     await this.walletRepository.updateWalletBalance(
@@ -83,7 +91,7 @@ class WalletSoapService {
       Number(wallet.balance.toFixed(2))
     );
 
-    payment.status = "CONFIRMED";
+    payment.status = "COMPLETED";
     await payment.save();
 
     return {
@@ -96,7 +104,8 @@ class WalletSoapService {
   async getWalletBalance(clientId: number) {
     const wallet = await this.walletRepository.findWalletByClientId(clientId);
 
-    if (!wallet) throw new NotFoundError("Wallet not found.");
+    if (!wallet)
+      throw new NotFoundError("Wallet not found. Do a recharge first.");
 
     return { balance: wallet.balance };
   }
