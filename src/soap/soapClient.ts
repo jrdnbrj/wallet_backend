@@ -123,14 +123,16 @@ export const soapClient = {
   },
 
   async rechargeWallet(data: {
-    clientId: number;
+    document: string;
+    phone: string;
     amount: number;
   }): Promise<SoapResponse> {
     return this.callSoapMethod("rechargeWallet", WALLET_SOAP_URL, data);
   },
 
   async makePayment(data: {
-    clientId: number;
+    document: string;
+    phone: string;
     amount: number;
   }): Promise<SoapResponse> {
     return this.callSoapMethod("makePayment", WALLET_SOAP_URL, data);
@@ -140,7 +142,10 @@ export const soapClient = {
     return this.callSoapMethod("confirmPayment", WALLET_SOAP_URL, data);
   },
 
-  async getWalletBalance(clientId: number): Promise<SoapResponse> {
-    return this.callSoapMethod("getWalletBalance", WALLET_SOAP_URL, clientId);
+  async getWalletBalance(data: {
+    document: string;
+    phone: string;
+  }): Promise<SoapResponse> {
+    return this.callSoapMethod("getWalletBalance", WALLET_SOAP_URL, data);
   },
 };

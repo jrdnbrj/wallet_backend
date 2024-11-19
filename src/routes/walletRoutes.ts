@@ -18,6 +18,6 @@ router.post(
   validateToken,
   confirmPayment
 );
-router.get("/:clientId/balance", getWalletBalance);
+router.get("/balance", getWalletBalance);
 
 export default router;

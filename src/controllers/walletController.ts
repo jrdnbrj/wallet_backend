@@ -39,10 +39,12 @@ export const confirmPayment = asyncHandler(
 
 export const getWalletBalance = asyncHandler(
   async (req: Request, res: Response) => {
-    if (!req.params.clientId)
-      throw new BadRequestError("The client ID is required.");
+    const { document, phone } = req.body;
 
-    const data = await soapClient.getWalletBalance(Number(req.params.clientId));
+    if (!document || !phone)
+      throw new BadRequestError("document and phone are required.");
+
+    const data = await soapClient.getWalletBalance(req.body);
 
     res.status(200).json({ success: true, cod_error: "00", data });
   }

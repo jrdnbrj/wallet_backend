@@ -153,8 +153,13 @@ class WalletSoapService {
     };
   }
 
-  async getWalletBalance(clientId: number) {
-    const wallet = await this.walletRepository.findWalletByClientId(clientId);
+  async getWalletBalance(data: { document: string; phone: string }) {
+    const client = await this.clientSoapService.getClient(
+      data.document,
+      data.phone
+    );
+
+    const wallet = await this.walletRepository.findWalletByClientId(client.id);
 
     if (!wallet)
       throw new NotFoundError("Wallet not found. Do a recharge first.");

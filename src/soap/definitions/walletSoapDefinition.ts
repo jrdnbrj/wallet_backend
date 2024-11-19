@@ -23,7 +23,7 @@ export const walletSoapDefinition = {
       },
       confirmPayment: async (args: { payment: any }) =>
         walletSoapService.confirmPayment(args),
-      getWalletBalance: async (args: number) =>
+      getWalletBalance: async (args: { document: string; phone: string }) =>
         walletSoapService.getWalletBalance(args),
     },
   },
