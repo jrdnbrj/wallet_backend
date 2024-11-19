@@ -9,6 +9,8 @@ class Wallet extends Model {
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public client?: Client;
 }
 
 Wallet.init(

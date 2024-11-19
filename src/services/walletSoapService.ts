@@ -3,14 +3,18 @@ import ClientSoapService from "../services/clientSoapService";
 import { NotFoundError, ConflictError } from "../middlewares/errors";
 import crypto from "crypto";
 import Payment from "../models/Payment";
+import EmailService from "../notifications/emailService";
+import path from "path";
 
 class WalletSoapService {
   private walletRepository: WalletRepository;
   private clientSoapService: ClientSoapService;
+  private emailService: EmailService;
 
   constructor() {
     this.walletRepository = new WalletRepository();
     this.clientSoapService = new ClientSoapService();
+    this.emailService = new EmailService();
   }
 
   async rechargeWallet(data: {
@@ -37,6 +41,22 @@ class WalletSoapService {
         Number(wallet.balance.toFixed(2))
       );
     }
+
+    const templatePath = path.resolve(
+      __dirname,
+      "../templates/rechargeEmail.html"
+    );
+
+    await this.emailService.sendEmail(
+      client.email,
+      "Your Wallet Has Been Successfully Recharged",
+      templatePath,
+      {
+        name: client.name,
+        amount: data.amount.toFixed(2),
+        balance: wallet.balance.toFixed(2),
+      }
+    );
 
     return { balance: wallet.balance };
   }
@@ -65,7 +85,23 @@ class WalletSoapService {
       token,
     });
 
-    console.log(`Email sent to client with token: ${token}`);
+    const templatePath = path.resolve(
+      __dirname,
+      "../templates/paymentEmail.html"
+    );
+
+    await this.emailService.sendEmail(
+      client.email,
+      "Secure access information to your Wallet!",
+      templatePath,
+      {
+        name: client.name,
+        paymentId: payment.id.toString(),
+        amount: payment.amount.toFixed(2),
+        sessionId,
+        token,
+      }
+    );
 
     return payment.dataValues;
   }
@@ -93,6 +129,22 @@ class WalletSoapService {
 
     payment.status = "COMPLETED";
     await payment.save();
+
+    const templatePath = path.resolve(
+      __dirname,
+      "../templates/paymentConfirmationEmail.html"
+    );
+
+    await this.emailService.sendEmail(
+      wallet.client!.email,
+      "Transaction Completed Successfully",
+      templatePath,
+      {
+        name: wallet.client!.name,
+        amount: payment.amount.toString(),
+        balance: wallet.balance.toString(),
+      }
+    );
 
     return {
       balance: wallet.balance,

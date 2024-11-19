@@ -1,9 +1,18 @@
 import Wallet from "../models/Wallet";
 import Payment from "../models/Payment";
+import Client from "../models/Client";
 
 export default class WalletRepository {
   public findWalletByClientId(clientId: number): Promise<Wallet | null> {
-    return Wallet.findOne({ where: { clientId } });
+    return Wallet.findOne({
+      where: { clientId },
+      include: [
+        {
+          model: Client,
+          as: "client",
+        },
+      ],
+    });
   }
 
   public createWallet(data: {
